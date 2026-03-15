@@ -112,7 +112,8 @@ const meals = await fetchRecipeByName('chicken');
 
 ## 🌐 Live Demo
 
-**[zestzyme.apandey.me](https://zestzyme.apandey.me)**
+**[zestzyme.apandey.me](https://recipes.apandey.me)**
+
 
 ---
 
