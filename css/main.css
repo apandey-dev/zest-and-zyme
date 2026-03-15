@@ -1,0 +1,164 @@
+/* ============================================================
+   main.css — Core Styles for Zest & Zyme
+   Contains: scrollbar, base layout, header states, animations,
+             title letter-spacing, food decorations
+   ============================================================ */
+
+/* ── Scrollbar: Hide on all browsers ── */
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
+html {
+    scrollbar-width: none;           /* Firefox */
+    -ms-overflow-style: none;        /* IE/Edge */
+    transition: background-color 0.5s ease;
+}
+
+/* ── Body: Dot-grid background pattern ── */
+body {
+    background-image: radial-gradient(rgba(124, 148, 115, 0.15) 1px, transparent 1px);
+    background-size: 24px 24px;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.6s ease, color 0.6s ease;
+}
+
+/* ── Header: Smooth transition on state change ── */
+#header-section {
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Header Initial State: full-viewport centered hero ── */
+.state-initial {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+/* ── Header Active State: sticky top bar with blur ── */
+.state-active {
+    min-height: auto;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+/* ── Water Fill Animation: used on theme toggle button ── */
+.water-fill-active {
+    transform: translateY(0%) !important;
+}
+
+/* ── Fade In Up: entrance animation for cards and content ── */
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Loader Spinner: shown during API fetch ── */
+.loader {
+    border: 3px solid transparent;
+    border-top: 3px solid white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: none;
+}
+
+@keyframes spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ── Input Focus: Remove default browser outline ── */
+input:focus {
+    outline: none;
+}
+
+
+/* ============================================================
+   BRAND TITLE — Letter Spacing
+   Desktop: wide spaced for visual impact
+   Mobile:  tighter, handled in mobile.css
+   ============================================================ */
+
+.brand-title {
+    letter-spacing: 0.18em;   /* desktop: nice wide spacing */
+}
+
+
+/* ============================================================
+   FOOD STICKER DECORATIONS (Desktop Only)
+   Floating food emoji scattered around the hero area.
+   Hidden on mobile via mobile.css.
+   Hidden once header transitions to .state-active.
+   ============================================================ */
+
+/* Container that holds all sticker elements */
+.hero-stickers {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;  /* clicks pass through to inputs */
+    overflow: hidden;
+    z-index: 0;
+    transition: opacity 0.4s ease;
+}
+
+/* Hide stickers when header collapses into sticky bar */
+.state-active .hero-stickers {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Individual sticker base style */
+.sticker {
+    position: absolute;
+    font-size: 2.2rem;
+    line-height: 1;
+    user-select: none;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.12));
+    animation: floatBob var(--float-dur, 4s) ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+    transition: transform 0.3s ease;
+}
+
+/* Gentle bobbing float animation */
+@keyframes floatBob {
+    0%, 100% { transform: translateY(0px) rotate(var(--rot, 0deg)); }
+    50%       { transform: translateY(-10px) rotate(var(--rot, 0deg)); }
+}
+
+/* Subtle rotate-wobble variant */
+@keyframes floatWobble {
+    0%, 100% { transform: translateY(0px) rotate(var(--rot, 0deg)); }
+    33%       { transform: translateY(-8px) rotate(calc(var(--rot, 0deg) + 5deg)); }
+    66%       { transform: translateY(-4px) rotate(calc(var(--rot, 0deg) - 4deg)); }
+}
+
+.sticker.wobble {
+    animation-name: floatWobble;
+}
+
+.sticker.large  { font-size: 3rem; }
+.sticker.small  { font-size: 1.6rem; }
+.sticker.medium { font-size: 2.4rem; }
