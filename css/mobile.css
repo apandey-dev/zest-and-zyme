@@ -6,16 +6,29 @@
 
 /* ── Food stickers on tablet/mobile: smaller & more subtle ── */
 @media (max-width: 1023px) {
+
     /* Show stickers but scaled down for smaller screens */
     .hero-stickers {
         display: block;
     }
 
     /* Base sticker: much smaller, semi-transparent on mobile */
-    .sticker        { font-size: 1.4rem; opacity: 0.75; }
-    .sticker.large  { font-size: 1.8rem; }
-    .sticker.medium { font-size: 1.5rem; }
-    .sticker.small  { font-size: 1.1rem; }
+    .sticker {
+        font-size: 1.4rem;
+        opacity: 0.75;
+    }
+
+    .sticker.large {
+        font-size: 1.8rem;
+    }
+
+    .sticker.medium {
+        font-size: 1.5rem;
+    }
+
+    .sticker.small {
+        font-size: 1.1rem;
+    }
 
     /* Tighter letter-spacing on mobile so title doesn't overflow */
     .brand-title {
@@ -25,26 +38,53 @@
 
 /* ── Extra small phones: stickers even tinier ── */
 @media (max-width: 480px) {
-    .sticker        { font-size: 1.1rem; opacity: 0.65; }
-    .sticker.large  { font-size: 1.4rem; }
-    .sticker.medium { font-size: 1.2rem; }
-    .sticker.small  { font-size: 0.9rem; }
+    .sticker {
+        font-size: 1.1rem;
+        opacity: 0.65;
+    }
+
+    .sticker.large {
+        font-size: 1.4rem;
+    }
+
+    .sticker.medium {
+        font-size: 1.2rem;
+    }
+
+    .sticker.small {
+        font-size: 0.9rem;
+    }
 }
 
 /* ── Small screens: tighter header padding ── */
 @media (max-width: 768px) {
+
     /* Header stays centered on mobile, reduce vertical spacing */
     .state-active {
         padding-top: 0.85rem;
         padding-bottom: 0.85rem;
     }
 
-    /* Recipe detail article: tighter corner radius on mobile */
+    /* Recipe detail article: edge-to-edge on mobile, no floating card feel */
     article.fade-in-up {
-        border-radius: 1.5rem;
+        border-radius: 0 !important;
+        border-left: none !important;
+        border-right: none !important;
     }
 
-    /* Ingredients grid: single column on very small screens */
+    /* Main: no side padding — let content go wall-to-wall */
+    main {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    /* Recipe list cards: restore a bit of side breathing room */
+    #recipe-list-container {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    /* Ingredients grid: keep 2 columns */
     .grid.grid-cols-2 {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -52,6 +92,7 @@
 
 /* ── Extra small screens (phones < 480px) ── */
 @media (max-width: 480px) {
+
     /* Reduce font size of search input placeholder for tiny screens */
     #search-input {
         font-size: 0.9rem;
@@ -65,5 +106,29 @@
     /* Reduce recipe detail image height for small viewports */
     .recipe-hero-image {
         height: 14rem;
+    }
+}
+
+
+/* ============================================================
+   MOBILE PILL THEME TOGGLE — Show/hide + viewport height
+   ============================================================ */
+
+/* On mobile: lock viewport height, internal scroll only */
+@media (max-width: 768px) {
+
+    /* Hide desktop round theme button */
+    #theme-btn-desktop-wrapper {
+        display: none !important;
+    }
+
+    /* Show mobile pill */
+    #mobile-theme-pill {
+        display: flex !important;
+    }
+
+    /* Extra padding so content doesn't hide behind the fixed pill */
+    main {
+        padding-bottom: 5.5rem;
     }
 }

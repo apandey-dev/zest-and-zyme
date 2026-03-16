@@ -11,8 +11,8 @@
 }
 
 html {
-    scrollbar-width: none;           /* Firefox */
-    -ms-overflow-style: none;        /* IE/Edge */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     transition: background-color 0.5s ease;
 }
 
@@ -68,6 +68,7 @@ body {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -86,8 +87,13 @@ body {
 }
 
 @keyframes spin {
-    0%   { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* ── Input Focus: Remove default browser outline ── */
@@ -103,7 +109,8 @@ input:focus {
    ============================================================ */
 
 .brand-title {
-    letter-spacing: 0.18em;   /* desktop: nice wide spacing */
+    letter-spacing: 0.18em;
+    /* desktop: nice wide spacing */
 }
 
 
@@ -118,7 +125,8 @@ input:focus {
 .hero-stickers {
     position: absolute;
     inset: 0;
-    pointer-events: none;  /* clicks pass through to inputs */
+    pointer-events: none;
+    /* clicks pass through to inputs */
     overflow: hidden;
     z-index: 0;
     transition: opacity 0.4s ease;
@@ -136,7 +144,7 @@ input:focus {
     font-size: 2.2rem;
     line-height: 1;
     user-select: none;
-    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.12));
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.12));
     animation: floatBob var(--float-dur, 4s) ease-in-out infinite;
     animation-delay: var(--float-delay, 0s);
     transition: transform 0.3s ease;
@@ -144,21 +152,188 @@ input:focus {
 
 /* Gentle bobbing float animation */
 @keyframes floatBob {
-    0%, 100% { transform: translateY(0px) rotate(var(--rot, 0deg)); }
-    50%       { transform: translateY(-10px) rotate(var(--rot, 0deg)); }
+
+    0%,
+    100% {
+        transform: translateY(0px) rotate(var(--rot, 0deg));
+    }
+
+    50% {
+        transform: translateY(-10px) rotate(var(--rot, 0deg));
+    }
 }
 
 /* Subtle rotate-wobble variant */
 @keyframes floatWobble {
-    0%, 100% { transform: translateY(0px) rotate(var(--rot, 0deg)); }
-    33%       { transform: translateY(-8px) rotate(calc(var(--rot, 0deg) + 5deg)); }
-    66%       { transform: translateY(-4px) rotate(calc(var(--rot, 0deg) - 4deg)); }
+
+    0%,
+    100% {
+        transform: translateY(0px) rotate(var(--rot, 0deg));
+    }
+
+    33% {
+        transform: translateY(-8px) rotate(calc(var(--rot, 0deg) + 5deg));
+    }
+
+    66% {
+        transform: translateY(-4px) rotate(calc(var(--rot, 0deg) - 4deg));
+    }
 }
 
 .sticker.wobble {
     animation-name: floatWobble;
 }
 
-.sticker.large  { font-size: 3rem; }
-.sticker.small  { font-size: 1.6rem; }
-.sticker.medium { font-size: 2.4rem; }
+.sticker.large {
+    font-size: 3rem;
+}
+
+.sticker.small {
+    font-size: 1.6rem;
+}
+
+.sticker.medium {
+    font-size: 2.4rem;
+}
+
+
+/* ============================================================
+   MOBILE PILL THEME TOGGLE
+   A wide pill fixed at the bottom of the screen.
+   Hidden on desktop, shown on mobile via mobile.css.
+   ============================================================ */
+
+/* ── Pill button base ── */
+#mobile-theme-pill {
+    display: none;
+    /* shown via mobile.css */
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    width: 5rem;
+    height: 2.75rem;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    padding: 0;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.20), 0 2px 6px rgba(0, 0, 0, 0.10);
+    background: #fff;
+    transition: box-shadow 0.3s ease, background 0.4s ease;
+}
+
+.dark #mobile-theme-pill {
+    background: #1E2324;
+}
+
+/* ── Water fill overlay inside the pill ── */
+#mobile-water-level {
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    transform: translateX(-100%);
+    z-index: 0;
+    pointer-events: none;
+    opacity: 1;
+}
+
+/* ── Pill track: centres the sliding knob ── */
+.mobile-pill-track {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 0.25rem;
+}
+
+/* ── Sliding icon knob ── */
+#mobile-pill-knob {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
+    transform: translateX(0);
+    transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 11;
+}
+
+/* Knob moved to right side (dark mode) */
+#mobile-pill-knob.is-dark {
+    /* 5rem pill - 2×0.25rem padding - 2.25rem knob ≈ 2.25rem travel */
+    transform: translateX(2.25rem);
+}
+
+/* Icon sizing inside knob */
+#mobile-pill-knob svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex-shrink: 0;
+}
+
+/* Moon icon: visible in light mode */
+#mobile-icon-moon {
+    display: block;
+    color: #2D3436;
+}
+
+#mobile-icon-sun {
+    display: none;
+    color: #facc15;
+}
+
+/* Dark mode icon states */
+.dark #mobile-icon-moon {
+    display: none;
+}
+
+.dark #mobile-icon-sun {
+    display: block;
+}
+
+/* label removed — no text in compact pill */
+
+/* ── Water wave ripple ── */
+@keyframes mobileWaterFill {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes mobileWaterDrain {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(100%);
+    }
+}
+
+/* ── Pill border (subtle) ── */
+#mobile-theme-pill::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    border: 2px solid rgba(124, 148, 115, 0.25);
+    pointer-events: none;
+    z-index: 20;
+}
+
+.dark #mobile-theme-pill::before {
+    border-color: rgba(255, 255, 255, 0.1);
+}

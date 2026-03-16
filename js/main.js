@@ -59,31 +59,24 @@ themeBtn.addEventListener('click', () => {
 
     if (!isDark) {
         /* ── LIGHT → DARK: Fill UP from bottom (water rises into night) ── */
-        // Start hidden below the button, color is dark slate for night
         waterLevel.className = 'absolute bottom-0 left-0 w-full h-full transform translate-y-full z-0 rounded-full bg-brand-slate';
         waterLevel.style.transition = 'transform 600ms ease-in-out';
         waterLevel.style.opacity = '1';
-
-        // Force reflow so the start position registers before animating
         void waterLevel.offsetWidth;
-
-        // Animate fill: slide UP to cover the button entirely
         waterLevel.style.transform = 'translateY(0%)';
 
         setTimeout(() => {
-            // Switch to dark mode once the button is covered
             html.classList.add('dark');
             localStorage.theme = 'dark';
             iconMoon.classList.add('hidden');
             iconSun.classList.remove('hidden');
+            syncMobilePill();
 
-            // Fade out the water overlay to reveal the newly dark button
             setTimeout(() => {
                 waterLevel.style.transition = 'opacity 0.4s ease';
                 waterLevel.style.opacity = '0';
 
                 setTimeout(() => {
-                    // Reset to hidden-below state ready for next click
                     waterLevel.style.transition = '';
                     waterLevel.style.transform = 'translateY(100%)';
                     waterLevel.style.opacity = '1';
@@ -94,31 +87,140 @@ themeBtn.addEventListener('click', () => {
 
     } else {
         /* ── DARK → LIGHT: Drain DOWN from top (water falls away into day) ── */
-        // Start fully covering the button (filled), color is yellow for daylight
         waterLevel.className = 'absolute bottom-0 left-0 w-full h-full z-0 rounded-full bg-yellow-400';
         waterLevel.style.transition = 'none';
         waterLevel.style.opacity = '1';
-        waterLevel.style.transform = 'translateY(0%)';   // start: fully filled
-
-        // Force reflow so starting state registers before we animate drain
+        waterLevel.style.transform = 'translateY(0%)';
         void waterLevel.offsetWidth;
-
-        // Animate drain: slide DOWN so water drops out of the button
         waterLevel.style.transition = 'transform 600ms ease-in-out';
-        waterLevel.style.transform = 'translateY(100%)'; // end: fully drained
+        waterLevel.style.transform = 'translateY(100%)';
 
         setTimeout(() => {
-            // Switch to light mode now that the button has "emptied"
             html.classList.remove('dark');
             localStorage.theme = 'light';
             iconSun.classList.add('hidden');
             iconMoon.classList.remove('hidden');
+            syncMobilePill();
 
-            // Fully reset element state
             waterLevel.style.transition = '';
             waterLevel.style.opacity = '1';
             themeBtn.disabled = false;
         }, 600);
+    }
+});
+
+
+/* ============================================================
+   2b. MOBILE PILL THEME TOGGLE
+   Pill shape fixed at bottom of screen (mobile only).
+   Light→Dark: water fills left→right, knob slides right.
+   Dark→Light: water drains right→left, knob slides left.
+   ============================================================ */
+
+const mobilePill = document.getElementById('mobile-theme-pill');
+const mobileWater = document.getElementById('mobile-water-level');
+const mobilePillKnob = document.getElementById('mobile-pill-knob');
+const mobilePillLabel = document.getElementById('mobile-pill-label');
+
+/**
+ * Syncs the mobile pill visual state to the current theme
+ * without animation — used on page load and after desktop toggle.
+ */
+function syncMobilePill() {
+    const isDark = html.classList.contains('dark');
+    if (isDark) {
+        mobilePillKnob.classList.add('is-dark');
+        if (mobilePillLabel) mobilePillLabel.textContent = 'Light Mode';
+        mobileWater.style.transition = 'none';
+        mobileWater.style.transform = 'translateX(100%)';
+        mobileWater.style.opacity = '1';
+    } else {
+        mobilePillKnob.classList.remove('is-dark');
+        if (mobilePillLabel) mobilePillLabel.textContent = 'Dark Mode';
+        mobileWater.style.transition = 'none';
+        mobileWater.style.transform = 'translateX(-100%)';
+        mobileWater.style.opacity = '1';
+    }
+}
+
+// Sync on page load
+syncMobilePill();
+
+mobilePill.addEventListener('click', () => {
+    if (mobilePill.disabled) return;
+    mobilePill.disabled = true;
+
+    const isDark = html.classList.contains('dark');
+
+    if (!isDark) {
+        /* ── LIGHT → DARK ──
+           Water sweeps left → right (dark slate).
+           Knob slides to the right.                */
+
+        mobileWater.style.transition = 'none';
+        mobileWater.style.transform = 'translateX(-100%)';
+        mobileWater.style.opacity = '1';
+        mobileWater.style.background = '#2D3436';
+        void mobileWater.offsetWidth;
+
+        mobileWater.style.transition = 'transform 600ms ease-in-out';
+        mobileWater.style.transform = 'translateX(0)';
+
+        // Slide knob right immediately (nice leading feel)
+        mobilePillKnob.classList.add('is-dark');
+
+        setTimeout(() => {
+            html.classList.add('dark');
+            localStorage.theme = 'dark';
+            // Also sync desktop icons
+            iconMoon.classList.add('hidden');
+            iconSun.classList.remove('hidden');
+            if (mobilePillLabel) mobilePillLabel.textContent = 'Light Mode';
+
+            // Fade water overlay out
+            setTimeout(() => {
+                mobileWater.style.transition = 'opacity 0.4s ease';
+                mobileWater.style.opacity = '0';
+
+                setTimeout(() => {
+                    mobileWater.style.transition = 'none';
+                    mobileWater.style.transform = 'translateX(100%)';
+                    mobileWater.style.opacity = '1';
+                    mobilePill.disabled = false;
+                }, 420);
+            }, 80);
+        }, 600);
+
+    } else {
+        /* ── DARK → LIGHT ──
+           Water sweeps right → left (yellow), then exits.
+           Knob slides to the left.                        */
+
+        mobileWater.style.transition = 'none';
+        mobileWater.style.transform = 'translateX(0)';
+        mobileWater.style.opacity = '1';
+        mobileWater.style.background = '#FACC15';
+        void mobileWater.offsetWidth;
+
+        mobileWater.style.transition = 'transform 600ms ease-in-out';
+        mobileWater.style.transform = 'translateX(-100%)';
+
+        // Slide knob left immediately
+        mobilePillKnob.classList.remove('is-dark');
+
+        setTimeout(() => {
+            html.classList.remove('dark');
+            localStorage.theme = 'light';
+            // Also sync desktop icons
+            iconSun.classList.add('hidden');
+            iconMoon.classList.remove('hidden');
+            if (mobilePillLabel) mobilePillLabel.textContent = 'Dark Mode';
+
+            mobileWater.style.transition = 'none';
+            mobileWater.style.transform = 'translateX(-100%)';
+            mobileWater.style.opacity = '1';
+            mobilePill.disabled = false;
+        }, 620);
     }
 });
 
